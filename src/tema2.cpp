@@ -22,7 +22,6 @@
 #define HASH_RSP_TAG	12 // tag for hash response
 
 #define DOWNLOAD_TAG	21 // tag for download thread
-#define UPLOAD_TAG		22 // tag for upload thread
 #define UPDATE_TAG		23 // tag for update request from downloader
 
 using namespace std;
@@ -204,7 +203,6 @@ void *download_thread_func(void *arg)
 
 void *upload_thread_func(void *arg)
 {
-	int rank = ((args_struct*)arg)->rank;
 	map<string, vector<string>>* seed_files = (map<string, vector<string>>*)((args_struct*)arg)->point2;
 	pthread_mutex_t *mutex = ((args_struct*)arg)->mutex;
 

@@ -1,0 +1,52 @@
+Pacuraru Mihai Dorin, 334CC, APD Tema2
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+
+Implementare peer
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+
+Pentru partea de init din peer citesc fisierul de intrare si tin minte fisierele pe care
+le am la seed cu hash urile lor. Totodata, trimit informatii trackerului despre fisier si
+astept de la tracker mesajul ca pot sa incep activitatea.
+
+-----------------------------------------------------------------------------------------
+
+Thread upload
+
+Thread ul de upload doar asteapta cereri de segmente. Daca peer ul detine hash ul cerut
+trimite un ACK, daca nu, trimite nu NACK. Daca thread ul de uploat primeste un mesaj de
+la tracker este evident ca e mesaj ca toata lumea a terminat de descarcat ce avea si se
+poate opri.
+
+-----------------------------------------------------------------------------------------
+
+Thread download
+
+Thread ul de download parcurge lista cu fisierele pe care vrea sa le descarce si trimite
+pentru fiecare numele la tracker. Tracker ul ii intoarce apoi lista cu hash urile si cea
+cu seed erii si peersii (suna oribil in romana, dar nu ma lasa inima sa zic egalii scuze)
+asociati fisierului respectiv. Pentru a nu bloca seed erii, prima oara se incearca
+descarcarea segmentelor de la peers. Daca niciunul nu are, se incearca de la seed eri.
+Dupa ce descarc un segment il adaug in lista de segmente pe care le pot tine la seed.
+La 10 segmente descarcate, se trimite un request la tracker pentru a updata lista cu peers
+si seed eri.
+Dupa ce am terminat de descarcat un fisier, ii trimit trackerului un mesaj aferent cu
+scopul de a ma pune pe lista de seed eri. Cand am terminat de descarrcat toate fisierele
+notific trackerul si opresc executia thread ului.
+
+-----------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------
+
+Implementare tracker
+
+Pentru partea de init tracker ul primeste de la fiecare client numele fisierului si hash
+urile segmentelor. Dupa ce a primit toate fisierele de la toti clientii, trimite un mesaj
+broadcast la clienti pentru a incepe activitatea.
+
+El primeste incotninuu cereri de la clientu pentru a trimite listele de hash uri pentru
+fisiere sau pentru a trimite lista de seed eri si peersi pentru un fisier. Daca un client
+a terminat de descarcat un fisier, tracker ul primeste un mesaj de la el si il pune pe
+lista de seed eri.
+Tracker ul numara clientii care au terminat de descarcat toate fisierele si cand primeste
+semnal de la toti le trimite inapoi semnal ca s a terminat activitatea si se opreste.
